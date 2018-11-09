@@ -1,7 +1,6 @@
 package com.overgaauw.chat.data;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 import lombok.NonNull;
 

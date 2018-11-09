@@ -1,3 +1,17 @@
 #message {
     width: 100%;
 }
+
+#chatbox {
+    height: 30%;
+    overflow: auto;
+    border: 1px;
+}
+
+.msg-name {
+    text-align: right;
+}
+
+.msg-message {
+    text-align: left;
+}

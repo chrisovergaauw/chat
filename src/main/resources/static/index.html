@@ -7,13 +7,13 @@
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-    <script src="/app.js"></script>
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
     enabled. Please enable
     Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
+    <div class="row">
         <div class="col-md-6">
             <form class="form-inline">
                 <div class="form-group">
@@ -25,7 +25,8 @@
                 </button>
             </form>
         </div>
-    <div class="row">
+    </div>
+    <div id="chatbox" class="row">
         <div class="col-md-12">
             <table id="conversation" class="table table-striped">
                 <thead>
@@ -42,11 +43,13 @@
     <form>
         <div id="chatInput" class="align-middle form-group row">
             <div class="align-middle col-sm-10">
-                <input type="text" id="message" class="form-control-plaintext" placeholder="Your message here..." disabled="disabled" required>
+                <input type="text" id="message" class="form-control-plaintext" placeholder="Your message here..."
+                       disabled="disabled">
             </div>
             <button id="sendMessage" class="col-sm-2 btn btn-default" type="submit" disabled="disabled">Send</button>
         </div>
     </form>
 </div>
+<script src="/app.js"></script>
 </body>
 </html>

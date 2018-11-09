@@ -53,10 +53,17 @@ function sendName() {
 
 function sendMessage() {
   stompClient.send("/app/lobby", {}, JSON.stringify({'name': $("#username").val(), 'message': $("#message").val()}));
+  const message = document.getElementById('message');
+  message.value = '';
+
 }
 
 function showGreeting(body) {
-  $("#greetings").append(`<tr><td>${body.timestamp}</td><td>${body.name}</td><td> ${body.message} </td></tr>`);
+  $("#greetings").append(
+    `<tr class="msg">
+        <td class="msg-timestamp block">${body.timestamp}</td>
+        <td class="msg-name">${body.name}</td>
+        <td class="msg-message" style="width: 100%;"> ${body.message} </td></tr>`);
 }
 
 $(function () {
@@ -71,6 +78,8 @@ $(function () {
         .then(subscribeToGreetings)
         .then(sendName);
     }
+    document.getElementById('message').focus();
+    document.getElementById('message').select();
   });
 
   $("#disconnect").click(function () {
@@ -78,6 +87,10 @@ $(function () {
   });
 
   $("#sendMessage").click(function () {
-    sendMessage();
+    const message = document.getElementById('message');
+    if (!(message.value === '')) {
+      console.log(message);
+      sendMessage();
+    }
   });
 });

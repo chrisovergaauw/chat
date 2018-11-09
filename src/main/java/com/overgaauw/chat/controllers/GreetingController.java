@@ -1,7 +1,7 @@
 package com.overgaauw.chat.controllers;
 
+import com.overgaauw.chat.data.BroadcastingMessage;
 import com.overgaauw.chat.data.EnteringMessage;
-import com.overgaauw.chat.data.Message;
 import com.overgaauw.chat.services.MessageHandlerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,7 +17,7 @@ public class GreetingController {
 
     @MessageMapping("/entry")
     @SendTo("/topic/lobby")
-    public Message greeting(EnteringMessage message) throws Exception {
+    public BroadcastingMessage greeting(EnteringMessage message) throws Exception {
         return messageHandlerService.getEnteredMessageResponse(HtmlUtils.htmlEscape(message.getName()));
     }
 }

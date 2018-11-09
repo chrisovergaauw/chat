@@ -33,7 +33,7 @@ function subscribeToGreetings(frame) {
   return new Promise(
     (resolve) => {
       stompClient.subscribe('/topic/lobby', function (greeting) {
-        showGreeting(JSON.parse(greeting.body).message);
+        showGreeting(JSON.parse(greeting.body));
       });
       resolve();
     });
@@ -55,8 +55,8 @@ function sendMessage() {
   stompClient.send("/app/lobby", {}, JSON.stringify({'name': $("#username").val(), 'message': $("#message").val()}));
 }
 
-function showGreeting(message) {
-  $("#greetings").append("<tr><td>" + message + "</td></tr>");
+function showGreeting(body) {
+  $("#greetings").append(`<tr><td>${body.timestamp}</td><td>${body.name}</td><td> ${body.message} </td></tr>`);
 }
 
 $(function () {

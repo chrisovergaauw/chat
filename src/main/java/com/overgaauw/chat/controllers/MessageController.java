@@ -1,6 +1,7 @@
 package com.overgaauw.chat.controllers;
 
-import com.overgaauw.chat.data.Message;
+import com.overgaauw.chat.data.BroadcastingMessage;
+import com.overgaauw.chat.data.IncomingMessage;
 import com.overgaauw.chat.services.MessageHandlerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -15,8 +16,8 @@ public class MessageController {
 
     @MessageMapping("/lobby")
     @SendTo("/topic/lobby")
-    public Message message(Message message) throws Exception {
-        return messageHandlerService.registerIncomingMessage(message);
+    public BroadcastingMessage message(IncomingMessage incomingMessage) throws Exception {
+        return messageHandlerService.registerIncomingMessage(incomingMessage);
     }
 }
 

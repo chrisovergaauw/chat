@@ -1,13 +1,13 @@
 package com.overgaauw.chat.data;
 
-public class EnteredMessage {
+public class EnteringMessage {
 
     private String name;
 
-    public EnteredMessage() {
+    public EnteringMessage() {
     }
 
-    public EnteredMessage(String name) {
+    public EnteringMessage(String name) {
         this.name = name;
     }
 

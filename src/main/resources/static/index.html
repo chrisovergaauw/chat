@@ -3,7 +3,7 @@
 <head>
     <title>Hello WebSocket</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/main.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
@@ -25,7 +25,6 @@
                 </button>
             </form>
         </div>
-    </div>
     <div class="row">
         <div class="col-md-12">
             <table id="conversation" class="table table-striped">
@@ -39,6 +38,15 @@
             </table>
         </div>
     </div>
+
+    <form>
+        <div id="chatInput" class="align-middle form-group row">
+            <div class="align-middle col-sm-10">
+                <input type="text" id="message" class="form-control-plaintext" placeholder="Your message here..." disabled="disabled" required>
+            </div>
+            <button id="sendMessage" class="col-sm-2 btn btn-default" type="submit" disabled="disabled">Send</button>
+        </div>
+    </form>
 </div>
 </body>
 </html>

@@ -1,7 +1,8 @@
-var stompClient = null;
+let stompClient = null;
 
 function setConnected(connected) {
   $("#connect").prop("disabled", connected);
+  $("#username").prop("disabled", connected);
   $("#disconnect").prop("disabled", !connected);
   if (connected) {
     $("#conversation").show();
@@ -13,15 +14,24 @@ function setConnected(connected) {
 }
 
 function connect() {
-  var socket = new SockJS('/gs-guide-websocket');
+  let socket = new SockJS('/gs-guide-websocket');
   stompClient = Stomp.over(socket);
-  stompClient.connect({}, function (frame) {
-    setConnected(true);
-    console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/greetings', function (greeting) {
-      showGreeting(JSON.parse(greeting.body).content);
+  return new Promise(
+    (resolve) => {
+      stompClient.connect({}, (frame => resolve(frame)))
     });
-  });
+}
+
+function subscribeToGreetings(frame) {
+  setConnected(true);
+  console.log('Connected: ' + frame);
+  return new Promise(
+    (resolve) => {
+      stompClient.subscribe('/topic/greetings', function (greeting) {
+        showGreeting(JSON.parse(greeting.body).content);
+      });
+      resolve();
+    });
 }
 
 function disconnect() {
@@ -33,7 +43,7 @@ function disconnect() {
 }
 
 function sendName() {
-  stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
+  stompClient.send("/app/entry", {}, JSON.stringify({'name': $("#username").val()}));
 }
 
 function showGreeting(message) {
@@ -44,7 +54,21 @@ $(function () {
   $("form").on('submit', function (e) {
     e.preventDefault();
   });
-  $( "#connect" ).click(function() { connect(); });
-  $( "#disconnect" ).click(function() { disconnect(); });
-  $( "#send" ).click(function() { sendName(); });
+
+  $("#connect").click(function (e) {
+    const username = document.getElementById('username');
+    if (username.checkValidity()) {
+      connect()
+        .then(subscribeToGreetings)
+        .then(sendName);
+    }
+  });
+
+  $("#disconnect").click(function () {
+    disconnect();
+  });
+
+  $("#send").click(function () {
+    sendName();
+  });
 });

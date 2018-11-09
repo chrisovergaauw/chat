@@ -7,8 +7,8 @@ public class Greeting {
     public Greeting() {
     }
 
-    public Greeting(String content) {
-        this.content = content;
+    public Greeting(String name) {
+        this.content = String.format("Welcome, %s!", name);
     }
 
     public String getContent() {

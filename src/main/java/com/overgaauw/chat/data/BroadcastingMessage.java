@@ -1,13 +1,11 @@
 package com.overgaauw.chat.data;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NonNull;
 
 import java.util.Date;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BroadcastingMessage {
     @NonNull
     String name;
@@ -21,9 +19,23 @@ public class BroadcastingMessage {
         this.timestamp = new Date().toString();
     }
 
+    public BroadcastingMessage(String name, String message, String timestamp) {
+        this.name = name;
+        this.message = message;
+        this.timestamp = timestamp;
+    }
+
     public BroadcastingMessage(IncomingMessage incomingMessage) {
         this.name = incomingMessage.name;
         this.message = incomingMessage.message;
         this.timestamp = new Date().toString();
+    }
+
+    @Override
+    public String toString(){
+        return String.format("{ \"name\": \"%s\", " +
+                "\"message\": \"%s\", " +
+                "\"timestamp\": \"%s\" }",
+                name, message, timestamp);
     }
 }

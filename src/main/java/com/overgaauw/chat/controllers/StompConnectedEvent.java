@@ -1,6 +1,7 @@
 package com.overgaauw.chat.controllers;
 
 import com.overgaauw.chat.data.BroadcastingMessage;
+import com.overgaauw.chat.repository.MessagesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -16,15 +17,18 @@ public class StompConnectedEvent implements ApplicationListener<SessionConnected
 
     private final SimpMessagingTemplate template;
 
+    private MessagesRepository messagesRepository;
+
     @Autowired
-    public StompConnectedEvent(SimpMessagingTemplate template) {
+    public StompConnectedEvent(SimpMessagingTemplate template, MessagesRepository messagesRepository) {
         this.template = template;
+        this.messagesRepository = messagesRepository;
     }
 
     @Override
     public void onApplicationEvent(SessionConnectedEvent event) {
-        log.debug("Client connected.");
         this.template.convertAndSend("/topic/lobby",
-                new BroadcastingMessage("Server", "A User has joined the channel"));
+                new BroadcastingMessage("Server", "A user has joined the channel"));
+        messagesRepository.getMessages().forEach((message) -> this.template.convertAndSend("/topic/lobby", message));
     }
 }

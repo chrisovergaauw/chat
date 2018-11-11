@@ -18,13 +18,13 @@ function setConnected(connected) {
   $("#greetings").html("");
 }
 
-function connect() {
+function connect(username) {
   let socket = new SockJS('/gs-guide-websocket');
   stompClient = Stomp.over(socket);
   return new Promise(
     (resolve) => {
-      stompClient.connect({}, (frame => resolve(frame)))
-    });
+      stompClient.connect("qwerty", "azerty", (frame => resolve(frame)))
+    }, );
 }
 
 function subscribeToGreetings(frame) {
@@ -33,7 +33,7 @@ function subscribeToGreetings(frame) {
   return new Promise(
     (resolve) => {
       stompClient.subscribe('/topic/lobby', function (greeting) {
-        showGreeting(JSON.parse(greeting.body));
+        showMessages(JSON.parse(greeting.body));
       });
       resolve();
     });
@@ -58,12 +58,20 @@ function sendMessage() {
 
 }
 
-function showGreeting(body) {
+function showMessages(body) {
+  if (Array.isArray(body)) {
+    body.forEach(msg => showMessage(msg));
+  } else {
+    showMessage(body);
+  }
+}
+
+function showMessage(msg) {
   $("#greetings").append(
     `<tr class="msg">
-        <td class="msg-timestamp block">${body.timestamp}</td>
-        <td class="msg-name">${body.name}</td>
-        <td class="msg-message" style="width: 100%;"> ${body.message} </td></tr>`);
+        <td class="msg-timestamp block">${msg.timestamp}</td>
+        <td class="msg-name">${msg.name}</td>
+        <td class="msg-message" style="width: 100%;"> ${msg.message} </td></tr>`);
 }
 
 $(function () {

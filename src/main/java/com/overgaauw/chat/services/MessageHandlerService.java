@@ -1,13 +1,12 @@
 package com.overgaauw.chat.services;
 
-import com.overgaauw.chat.data.BroadcastingMessage;
 import com.overgaauw.chat.data.IncomingMessage;
-import com.overgaauw.chat.exceptions.UserExistsException;
+import com.overgaauw.chat.data.OutGoingMessage;
 import com.overgaauw.chat.repository.MessagesRepository;
-import com.overgaauw.chat.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,32 +17,26 @@ public class MessageHandlerService {
     private static final Logger log = LoggerFactory.getLogger(MessageHandlerService.class);
 
     private final MessagesRepository messagesRepository;
-    private final UserRepository userRepository;
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
-    public MessageHandlerService(MessagesRepository messagesRepository, UserRepository userRepository) {
+    public MessageHandlerService(MessagesRepository messagesRepository,
+                                 SimpMessagingTemplate simpMessagingTemplate) {
         this.messagesRepository = messagesRepository;
-        this.userRepository = userRepository;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
-    public List<BroadcastingMessage> getEnteredMessageResponse(String name) throws UserExistsException {
-        List<BroadcastingMessage> messages;
-        if (userRepository.findUserByName(name) == null) {
-            userRepository.createUser(name);
-            messages = messagesRepository.getMessages();
-            messages.add(new BroadcastingMessage("Server",
-                    String.format("Welcome %s!", name)));
-        }else {
-            throw new UserExistsException("A user with this name already exists!");
-            // technically this does not do anything yet, user can still send messages with name he provides.
-        }
-        return messages;
-    }
-
-    public BroadcastingMessage registerIncomingMessage(IncomingMessage incomingMessage) {
-        BroadcastingMessage msg = new BroadcastingMessage(incomingMessage);
+    public OutGoingMessage registerIncomingMessage(IncomingMessage incomingMessage) {
+        OutGoingMessage msg = new OutGoingMessage(incomingMessage.getFrom(), incomingMessage.getText());
         messagesRepository.insertMessage(msg);
         log.info(msg.toString());
         return msg;
+    }
+
+    public List<OutGoingMessage> announceNewUser() {
+        log.info("announcing new user...");
+        this.simpMessagingTemplate.convertAndSend("/secured/chatRoomHistory",
+                new OutGoingMessage("Server", "A user has joined the channel"));
+        return messagesRepository.getMessages();
     }
 }

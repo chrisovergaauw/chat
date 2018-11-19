@@ -13,19 +13,6 @@
     enabled. Please enable
     Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label for="username">Username: </label>
-                    <input type="text" id="username" class="form-control" placeholder="Your name here..." required>
-                </div>
-                <button id="connect" class="btn btn-default" type="submit">Connect</button>
-                <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
-                </button>
-            </form>
-        </div>
-    </div>
     <div id="chatbox" class="row">
         <div class="col-md-12">
             <table id="conversation" class="table table-striped">
@@ -43,10 +30,9 @@
     <form>
         <div id="chatInput" class="align-middle form-group row">
             <div class="align-middle col-sm-10">
-                <input type="text" id="message" class="form-control-plaintext" placeholder="Your message here..."
-                       disabled="disabled">
+                <input type="text" id="message" class="form-control-plaintext" placeholder="Your message here...">
             </div>
-            <button id="sendMessage" class="col-sm-2 btn btn-default" type="submit" disabled="disabled">Send</button>
+            <button id="sendMessage" class="col-sm-2 btn btn-default" type="submit">Send</button>
         </div>
     </form>
 </div>

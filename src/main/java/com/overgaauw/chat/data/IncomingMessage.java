@@ -7,14 +7,16 @@ import lombok.NonNull;
 @Data
 @NoArgsConstructor
 public class IncomingMessage {
-    @NonNull
-    String name;
-    @NonNull
-    String message;
 
-    public IncomingMessage(String name, String message) {
-        this.name = name;
-        this.message = message;
+    @NonNull
+    String from;
+    String to;
+    @NonNull
+    String text;
+
+    public IncomingMessage(String from, String text) {
+        this.from = from;
+        this.text = text;
     }
 }
 

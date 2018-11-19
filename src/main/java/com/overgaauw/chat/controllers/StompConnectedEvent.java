@@ -1,17 +1,17 @@
 package com.overgaauw.chat.controllers;
 
-import com.overgaauw.chat.data.BroadcastingMessage;
+import com.overgaauw.chat.data.OutGoingMessage;
 import com.overgaauw.chat.repository.MessagesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 @Component
-public class StompConnectedEvent implements ApplicationListener<SessionConnectedEvent> {
+public class StompConnectedEvent implements ApplicationListener<SessionSubscribeEvent> {
 
     private static final Logger log = LoggerFactory.getLogger(StompConnectedEvent.class);
 
@@ -26,9 +26,12 @@ public class StompConnectedEvent implements ApplicationListener<SessionConnected
     }
 
     @Override
-    public void onApplicationEvent(SessionConnectedEvent event) {
-        this.template.convertAndSend("/topic/lobby",
-                new BroadcastingMessage("Server", "A user has joined the channel"));
-        messagesRepository.getMessages().forEach((message) -> this.template.convertAndSend("/topic/lobby", message));
+    public void onApplicationEvent(SessionSubscribeEvent event) {
+        log.info(String.format("%s connected", event.getUser().getName()));
+
+        messagesRepository.getMessages().forEach((message) -> {
+                template.convertAndSendToUser(
+                        event.getUser().getName(), "/secured/user/queue/specific-user", message);
+        });
     }
 }

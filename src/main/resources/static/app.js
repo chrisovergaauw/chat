@@ -1,58 +1,56 @@
 let stompClient = null;
+let sessionId = "";
+let username = "";
 
-function setConnected(connected) {
-  $("#connect").prop("disabled", connected);
-  $("#disconnect").prop("disabled", !connected);
+window.onload = function() {
+  connect()
+    .then(() => {
+      subscribeToChatRoom();
+      subscribeToPrivateChannel();
+    });
+};
 
-  $("#username").prop("disabled", connected);
-  $("#message").prop("disabled", !connected);
-  $("#sendMessage").prop("disabled", !connected);
-
-
-  if (connected) {
-    $("#conversation").show();
-  }
-  else {
-    $("#conversation").hide();
-  }
-  $("#greetings").html("");
-}
-
-function connect(username) {
-  let socket = new SockJS('/gs-guide-websocket');
+function connect() {
+  let socket = new SockJS('/secured/room');
   stompClient = Stomp.over(socket);
   return new Promise(
     (resolve) => {
-      stompClient.connect("qwerty", "azerty", (frame => resolve(frame)))
-    }, );
-}
-
-function subscribeToGreetings(frame) {
-  setConnected(true);
-  console.log('Connected: ' + frame);
-  return new Promise(
-    (resolve) => {
-      stompClient.subscribe('/topic/lobby', function (greeting) {
-        showMessages(JSON.parse(greeting.body));
+      stompClient.connect({}, function (frame) {
+        let url = stompClient.ws._transport.url;
+        url = url.replace(
+          "ws://localhost:8080/secured/room/",  "");
+        url = url.replace("/websocket", "");
+        url = url.replace(/^[0-9]+\//, "");
+        sessionId = url;
+        username = frame.headers['user-name'];
+        resolve();
       });
-      resolve();
     });
 }
 
-function disconnect() {
-  if (stompClient !== null) {
-    stompClient.disconnect();
-  }
-  setConnected(false);
-  console.log("Disconnected");
-}
+function subscribeToChatRoom(frame) {
+  return new Promise(
+    (resolve) => {
+      stompClient.subscribe('/secured/chatRoomHistory', function(msgOut) {
+        showMessages(JSON.parse(msgOut.body));
+        resolve();
+      });
+    });
+};
 
-function sendName() {
-  stompClient.send("/app/entry", {}, JSON.stringify({'name': $("#username").val()}));
+function subscribeToPrivateChannel(frame) {
+  return new Promise(
+    (resolve) => {
+      stompClient.subscribe('/secured/user/queue/specific-user'
+        + '-user' + sessionId, function (msgOut) {
+         showMessages(JSON.parse(msgOut.body));
+         resolve();
+        });
+    });
 }
 
 function sendMessage() {
-  stompClient.send("/app/lobby", {}, JSON.stringify({'name': $("#username").val(), 'message': $("#message").val()}));
+  stompClient.send("/spring-security-mvc-socket/secured/chatRoom", {}, JSON.stringify({'from': username, 'text': $("#message").val()}));
   const message = document.getElementById('message');
   message.value = '';
 
@@ -70,28 +68,13 @@ function showMessage(msg) {
   $("#greetings").append(
     `<tr class="msg">
         <td class="msg-timestamp block">${msg.timestamp}</td>
-        <td class="msg-name">${msg.name}</td>
-        <td class="msg-message" style="width: 100%;"> ${msg.message} </td></tr>`);
+        <td class="msg-name">${msg.from}</td>
+        <td class="msg-message" style="width: 100%;"> ${msg.text} </td></tr>`);
 }
 
 $(function () {
   $("form").on('submit', function (e) {
     e.preventDefault();
-  });
-
-  $("#connect").click(function (e) {
-    const username = document.getElementById('username');
-    if (username.checkValidity()) {
-      connect()
-        .then(subscribeToGreetings)
-        .then(sendName);
-    }
-    document.getElementById('message').focus();
-    document.getElementById('message').select();
-  });
-
-  $("#disconnect").click(function () {
-    disconnect();
   });
 
   $("#sendMessage").click(function () {

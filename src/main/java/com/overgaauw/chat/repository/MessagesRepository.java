@@ -1,6 +1,6 @@
 package com.overgaauw.chat.repository;
 
-import com.overgaauw.chat.data.BroadcastingMessage;
+import com.overgaauw.chat.data.OutGoingMessage;
 import com.overgaauw.chat.model.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -19,14 +19,14 @@ public class MessagesRepository {
         this.entityManager = entityManager;
     }
 
-    public List<BroadcastingMessage> getMessages() {
+    public List<OutGoingMessage> getMessages() {
         List<Message> results = entityManager.createNamedQuery("messages.getAllMessages", Message.class).getResultList();
-        return results.stream().map(msg -> new BroadcastingMessage(msg.getName(), msg.getMessage(), msg.getTimestamp())).collect(Collectors.toList());
+        return results.stream().map(OutGoingMessage::new).collect(Collectors.toList());
     }
 
     @Transactional
-    public void insertMessage(BroadcastingMessage broadcastingMessage) {
-        Message msg = new Message(broadcastingMessage);
+    public void insertMessage(OutGoingMessage outGoingMessage) {
+        Message msg = new Message(outGoingMessage);
         entityManager.persist(msg);
     }
 }

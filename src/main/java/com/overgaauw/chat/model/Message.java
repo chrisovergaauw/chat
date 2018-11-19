@@ -1,6 +1,6 @@
 package com.overgaauw.chat.model;
 
-import com.overgaauw.chat.data.BroadcastingMessage;
+import com.overgaauw.chat.data.OutGoingMessage;
 import io.micrometer.core.lang.NonNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,9 +27,9 @@ public class Message implements Serializable {
     @Column(name = "timestamp")
     private String timestamp;
 
-    public Message(BroadcastingMessage broadcastingMessage) {
-        this.name = broadcastingMessage.getName();
-        this.message = broadcastingMessage.getMessage();
-        this.timestamp = broadcastingMessage.getTimestamp();
+    public Message(OutGoingMessage outGoingMessage) {
+        this.name = outGoingMessage.getFrom();
+        this.message = outGoingMessage.getText();
+        this.timestamp = outGoingMessage.getTimestamp();
     }
 }

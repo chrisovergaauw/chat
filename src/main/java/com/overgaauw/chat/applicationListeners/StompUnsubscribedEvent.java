@@ -2,45 +2,38 @@ package com.overgaauw.chat.applicationListeners;
 
 import com.overgaauw.chat.data.OutGoingMessage;
 import com.overgaauw.chat.repository.MessagesRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 @Component
-public class StompSubscribedEvent implements ApplicationListener<SessionSubscribeEvent>{
+public class StompUnsubscribedEvent implements ApplicationListener<SessionUnsubscribeEvent> {
 
-    private static final Logger log = LoggerFactory.getLogger(StompSubscribedEvent.class);
+    private static final Logger log = LoggerFactory.getLogger(StompUnsubscribedEvent.class);
 
     private final SimpMessagingTemplate template;
 
     private MessagesRepository messagesRepository;
 
     @Autowired
-    public StompSubscribedEvent(SimpMessagingTemplate template, MessagesRepository messagesRepository) {
+    public StompUnsubscribedEvent(SimpMessagingTemplate template, MessagesRepository messagesRepository) {
         this.template = template;
         this.messagesRepository = messagesRepository;
     }
 
     @Override
-    public void onApplicationEvent(SessionSubscribeEvent event) {
-        log.info("event");
+    public void onApplicationEvent(SessionUnsubscribeEvent event) {
         if ("/secured/chatRoomHistory".equals(event.getMessage().getHeaders().get("simpDestination"))) {
 
             String username = event.getUser() != null ? event.getUser().getName() : "Someone";
 
-            messagesRepository.getMessages().forEach((message) -> {
-                template.convertAndSendToUser(
-                        username, "/secured/user/queue/specific-user", message);
-            });
-
-            log.info(String.format("%s connected", username));
             OutGoingMessage outGoingMessage = new OutGoingMessage(
                     "server",
-                    String.format("%s has joined the channel!", username));
+                    String.format("%s has left the channel!", username));
 
             template.convertAndSend("/secured/chatRoomHistory", outGoingMessage);
             messagesRepository.insertMessage(outGoingMessage);

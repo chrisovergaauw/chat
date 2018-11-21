@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
@@ -15,7 +16,7 @@ public class OutGoingMessage extends IncomingMessage {
 
     public OutGoingMessage(String from, String text) {
         super(from, text);
-        this.timestamp = new Date().toString();
+        this.timestamp = formatDate(new Date());
     }
 
     public OutGoingMessage(Message DBMessage) {
@@ -26,7 +27,13 @@ public class OutGoingMessage extends IncomingMessage {
 
     public OutGoingMessage(IncomingMessage incomingMessage) {
         super(incomingMessage.getFrom(), incomingMessage.getText());
-        this.timestamp = new Date().toString();
+        this.timestamp = formatDate(new Date());
+    }
+
+    private String formatDate(Date date) {
+        String pattern = "yy-MM-dd HH:MM:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        return simpleDateFormat.format(date);
     }
 }
 

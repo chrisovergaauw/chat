@@ -3,7 +3,7 @@
 <head>
     <title>Hello WebSocket</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
@@ -13,14 +13,12 @@
     enabled. Please enable
     Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
+    <div class="row">
+        <div id="title"><h1>Chat</h1></div>
+    </div>
     <div id="chatbox" class="row">
-        <div class="col-md-12">
-            <table id="conversation" class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Greetings</th>
-                </tr>
-                </thead>
+        <div class="col-md-12" style="float: none; margin: 0 auto;">
+            <table id="conversation" class="table table-fit">
                 <tbody id="greetings">
                 </tbody>
             </table>
@@ -28,11 +26,14 @@
     </div>
 
     <form>
-        <div id="chatInput" class="align-middle form-group row">
-            <div class="align-middle col-sm-10">
+        <div id="chatInput" class="form-group row">
+            <div class="col-sm-10 nopadding">
                 <input type="text" id="message" class="form-control-plaintext" placeholder="Your message here...">
             </div>
-            <button id="sendMessage" class="col-sm-2 btn btn-default" type="submit">Send</button>
+            <div class="col-sm-2 nopadding">
+                <button id="sendMessage" class="col-sm-2 btn btn-default" type="submit">Send</button>
+            </div>
+
         </div>
     </form>
 </div>

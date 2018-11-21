@@ -5,8 +5,8 @@ let username = "";
 window.onload = function() {
   connect()
     .then(() => {
-      subscribeToChatRoom();
       subscribeToPrivateChannel();
+      subscribeToChatRoom();
     });
 };
 
@@ -70,6 +70,7 @@ function showMessage(msg) {
         <td class="msg-timestamp block">${msg.timestamp}</td>
         <td class="msg-name">${msg.from}</td>
         <td class="msg-message" style="width: 100%;"> ${msg.text} </td></tr>`);
+  $("#chatbox").scrollTop($("#chatbox").height());
 }
 
 $(function () {

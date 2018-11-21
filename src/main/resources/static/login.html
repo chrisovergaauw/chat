@@ -1,21 +1,38 @@
 <html>
-<head></head>
+<head>
+    <title>Hello WebSocket</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+</head>
 <body>
 <h1>Login</h1>
-<form name='f' action="login" method='POST'>
+<form name='f' action="/perform_login" method='POST'>
     <table>
         <tr>
             <td>User:</td>
-            <td><input type='text' name='username' value=''></td>
+            <td><input type='text' name='username' value='' autocomplete="username"></td>
         </tr>
         <tr>
             <td>Password:</td>
-            <td><input type='password' name='password' /></td>
+            <td><input type='password' name='password' autocomplete="current-password" /></td>
         </tr>
         <tr>
             <td><input name="submit" type="submit" value="submit" /></td>
+            <span id="error">Username or password incorrect!</span>
         </tr>
     </table>
 </form>
+
+<script>
+  window.onload = function() { //hides error message
+    let error = document.getElementById("error");
+    console.log("a");
+    if (window.location.search.indexOf('error') === -1) {
+      console.log("b");
+      error.style.display = "none";
+    }
+  }
+</script>
 </body>
 </html>

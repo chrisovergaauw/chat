@@ -18,9 +18,10 @@ import java.io.Serializable;
 public class Message implements Serializable {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private int id;
     @Column(name = "name")
     private String name;
-    @Id
     @NonNull
     @Column(name= "message")
     private String message;

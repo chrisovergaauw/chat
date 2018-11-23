@@ -14,9 +14,7 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 public class StompSubscribedEvent implements ApplicationListener<SessionSubscribeEvent>{
 
     private static final Logger log = LoggerFactory.getLogger(StompSubscribedEvent.class);
-
     private final SimpMessagingTemplate template;
-
     private MessagesRepository messagesRepository;
 
     @Autowired
@@ -27,20 +25,16 @@ public class StompSubscribedEvent implements ApplicationListener<SessionSubscrib
 
     @Override
     public void onApplicationEvent(SessionSubscribeEvent event) {
-        log.info("event");
         if ("/secured/chatRoomHistory".equals(event.getMessage().getHeaders().get("simpDestination"))) {
 
             String username = event.getUser() != null ? event.getUser().getName() : "Someone";
 
-            messagesRepository.getMessages().forEach((message) -> {
-                template.convertAndSendToUser(
-                        username, "/secured/user/queue/specific-user", message);
-            });
+            messagesRepository.getMessages().forEach((message) -> template.convertAndSendToUser(
+                    username, "/secured/user/queue/specific-user", message));
 
             log.info(String.format("%s connected", username));
             OutGoingMessage outGoingMessage = new OutGoingMessage(
-                    "server",
-                    String.format("%s has joined the channel!", username));
+                    "server", String.format("%s has joined the channel!", username));
 
             template.convertAndSend("/secured/chatRoomHistory", outGoingMessage);
             messagesRepository.insertMessage(outGoingMessage);

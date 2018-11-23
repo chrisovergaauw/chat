@@ -32,8 +32,7 @@ public class StompUnsubscribedEvent implements ApplicationListener<SessionUnsubs
             String username = event.getUser() != null ? event.getUser().getName() : "Someone";
 
             OutGoingMessage outGoingMessage = new OutGoingMessage(
-                    "server",
-                    String.format("%s has left the channel!", username));
+                    "server", String.format("%s has left the channel!", username));
 
             template.convertAndSend("/secured/chatRoomHistory", outGoingMessage);
             messagesRepository.insertMessage(outGoingMessage);

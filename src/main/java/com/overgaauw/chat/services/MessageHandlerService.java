@@ -39,4 +39,11 @@ public class MessageHandlerService {
                 new OutGoingMessage("Server", "A user has joined the channel"));
         return messagesRepository.getMessages();
     }
+
+    public void registerPrivateMessage(IncomingMessage incomingMessage) {
+        log.info(incomingMessage.toString());
+        OutGoingMessage msg = new OutGoingMessage(incomingMessage);
+        simpMessagingTemplate.convertAndSendToUser(
+                incomingMessage.getTo(), "/secured/user/queue/specific-user", msg);
+    }
 }

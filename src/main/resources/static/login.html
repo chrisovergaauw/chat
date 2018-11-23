@@ -2,6 +2,7 @@
 <head>
     <title>Hello WebSocket</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <script src="/webjars/jquery/jquery.min.js"></script>
 </head>
@@ -24,15 +25,6 @@
     </table>
 </form>
 
-<script>
-  window.onload = function() { //hides error message
-    let error = document.getElementById("error");
-    console.log("a");
-    if (window.location.search.indexOf('error') === -1) {
-      console.log("b");
-      error.style.display = "none";
-    }
-  }
-</script>
+<script src="/login.js"></script>
 </body>
 </html>

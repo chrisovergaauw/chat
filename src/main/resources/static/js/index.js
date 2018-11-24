@@ -74,7 +74,7 @@ function showMessage(msg) {
 }
 
 $(function () {
-  $("form").on('submit', function (e) {
+  $('form[name="sendMessage-form"]').on('submit', function (e) {
     e.preventDefault();
   });
 

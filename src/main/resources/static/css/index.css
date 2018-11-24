@@ -4,7 +4,7 @@ body {
 }
 
 
-#message, #sendMessage, #chatbox {
+#message, #sendMessage, #chatbox, #logout {
     background: none;
     border-radius: 10px;
     border: solid #A9B7C6;
@@ -16,7 +16,7 @@ body {
     margin: auto auto 5vh;
 }
 
-#message, #sendMessage {
+#message, #sendMessage, #logout {
     width: 100%;
     font-size: inherit;
     padding: 0.2em;
@@ -25,6 +25,13 @@ body {
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
 
+}
+
+#logout {
+    position: absolute;
+    right: 1em;
+    top: 1em;
+    width: auto;
 }
 
 #title {
@@ -38,7 +45,7 @@ input:focus, button:focus {
 
 #chatbox {
     height: 50vh;
-    width: 80vw;
+    width: 80%;
     overflow: auto;
     margin: auto auto 5vh;
 }

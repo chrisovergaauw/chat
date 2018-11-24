@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -54,6 +55,13 @@ public class ChatAppIntegrationTests {
     @Test
     public void userIsAbleToLoginWithCorrectCredentials() {
         assertEquals("Hello WebSocket", driver.getTitle());
+    }
+
+    @Test
+    public void userIsAbleToLoginWithCorrectCredentialsAndLogout() {
+        assertEquals("Hello WebSocket", driver.getTitle());
+        driver.findElement(By.id("logout")).click();
+        assertTrue(driver.getCurrentUrl().endsWith("logout"));
     }
 
     @Test
@@ -120,8 +128,11 @@ public class ChatAppIntegrationTests {
 
     private void performLoginSequence(WebDriver driver, String username, String password) {
         driver.get(url);
-        driver.findElement(By.id("username")).sendKeys(username);
-        driver.findElement(By.id("password")).sendKeys(password);
+        Select usernameField = new Select(driver.findElement(By.id("username")));
+        usernameField.selectByValue(username);
+        WebElement passwordField = driver.findElement(By.id("password"));
+        passwordField.clear();
+        passwordField.sendKeys(password);
         driver.findElement(By.id("submit")).click();
     }
 }

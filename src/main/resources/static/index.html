@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Hello WebSocket</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -13,6 +13,10 @@
     enabled. Please enable
     Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
+        <!--<button id="logout"><a href="/perform_logout">Logout</a></button>-->
+    <form name="logout-form" action="/perform_logout">
+        <input id="logout" type="submit" value="Log out" />
+    </form>
     <div class="row">
         <div id="title"><h1>Chat</h1></div>
     </div>
@@ -25,7 +29,7 @@
         </div>
     </div>
 
-    <form>
+    <form name="sendMessage-form">
         <div id="chatInput" class="form-group row">
             <div class="col-sm-10 nopadding">
                 <input type="text" id="message" class="form-control-plaintext" placeholder="Your message here...">

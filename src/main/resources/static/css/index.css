@@ -1,0 +1,58 @@
+body {
+    background: #2B2B2B !important;
+    color: #A9B7C6 !important;
+}
+
+
+#message, #sendMessage, #chatbox {
+    background: none;
+    border-radius: 10px;
+    border: solid #A9B7C6;
+    color: #A9B7C6
+}
+
+#chatInput {
+    width: 50vw;
+    margin: auto auto 5vh;
+}
+
+#message, #sendMessage {
+    width: 100%;
+    font-size: inherit;
+    padding: 0.2em;
+    margin: 0.1em 0.2em;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+
+}
+
+#title {
+    text-align: center;
+}
+
+input:focus, button:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 1pt #B5C4D3;
+}
+
+#chatbox {
+    height: 50vh;
+    width: 80vw;
+    overflow: auto;
+    margin: auto auto 5vh;
+}
+
+.msg-name {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.msg-message {
+    text-align: left;
+    width: 100%;
+}
+
+.msg-timestamp {
+    white-space: nowrap;;
+}

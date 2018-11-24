@@ -25,3 +25,4 @@
 /nbdist/
 /.nb-gradle/
 chat-application*.log
+.DS_Store

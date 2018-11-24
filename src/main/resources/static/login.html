@@ -1,30 +1,32 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Hello WebSocket</title>
+    <title>Hello WebSocket login</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet" type="text/css">
     <script src="/webjars/jquery/jquery.min.js"></script>
 </head>
 <body>
-<h1>Login</h1>
-<form name='f' action="/perform_login" method='POST'>
-    <table>
-        <tr>
-            <td>User:</td>
-            <td><input type='text' id='username' name='username' value='' autocomplete="username"></td>
-        </tr>
-        <tr>
-            <td>Password:</td>
-            <td><input type='password' id='password' name='password' autocomplete="current-password" /></td>
-        </tr>
-        <tr>
-            <td><input id="submit" name="submit" type="submit" value="submit" /></td>
-            <span id="error">Username or password incorrect!</span>
-        </tr>
-    </table>
-</form>
 
-<script src="/login.js"></script>
+<div id="main-content" class="container-fluid">
+    <div class="row" id="form-row">
+        <div id="login-box">
+            <div id="title"><h1>Chat login</h1></div>
+            <form id="login-form" name='f' action="/perform_login" method='POST'>
+                <select name="username" id="username">
+                    <option value="Leonardo" selected>Leonardo</option>
+                    <option value="donatello">Donatello</option>
+                    <option value="Michelangelo">Michelangelo</option>
+                    <option value="Raphael">Raphael</option>
+                    <option value="Splinter">Splinter</option>
+                </select>
+                <input type='password' id='password' value='p1zza' name='password' autocomplete="current-password"/>
+                <span><input id="submit" name="submit" type="submit" value="submit"/></span>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="js/login.js"></script>
 </body>
 </html>

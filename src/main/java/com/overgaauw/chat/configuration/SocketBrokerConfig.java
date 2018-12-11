@@ -13,7 +13,7 @@ public class SocketBrokerConfig
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/secured/user/queue/specific-user", "/secured");
+        config.enableSimpleBroker("/secured/user/queue/system/specific-user", "/secured/user/queue/chat/specific-user", "/secured");
         config.setApplicationDestinationPrefixes("/spring-security-mvc-socket");
         config.setUserDestinationPrefix("/secured/user");
     }

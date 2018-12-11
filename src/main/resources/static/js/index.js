@@ -7,7 +7,9 @@ window.onload = function() {
     .then(() => {
       subscribeToPrivateChannel();
       subscribeToChatRoom();
+      subscribeToSystemChannel();
     });
+  fetchUserList();
 };
 
 function connect() {
@@ -41,11 +43,22 @@ function subscribeToChatRoom(frame) {
 function subscribeToPrivateChannel(frame) {
   return new Promise(
     (resolve) => {
-      stompClient.subscribe('/secured/user/queue/specific-user'
+      stompClient.subscribe('/secured/user/queue/chat/specific-user'
         + '-user' + sessionId, function (msgOut) {
          showMessages(JSON.parse(msgOut.body));
          resolve();
         });
+    });
+}
+
+function subscribeToSystemChannel(frame) {
+  return new Promise(
+    (resolve) => {
+      stompClient.subscribe('/secured/user/queue/system/specific-user'
+        + '-user' + sessionId, function (msgOut) {
+        handleSystemMessage(JSON.parse(msgOut.body));
+        resolve();
+      });
     });
 }
 
@@ -65,12 +78,36 @@ function showMessages(body) {
 }
 
 function showMessage(msg) {
-  $("#greetings").append(
+  $("#messages").append(
     `<tr class="msg">
         <td class="msg-timestamp block">${msg.timestamp}</td>
         <td class="msg-name">${msg.from}</td>
         <td class="msg-message" style="width: 100%;"> ${msg.text} </td></tr>`);
   $("#chatbox").scrollTop($("#chatbox").height());
+}
+
+function showUser(user) {
+  $("#users").append(
+    `<tr class="username-row">
+        <td value="${user}" class="username">${user}</td>
+     </tr>
+     `);
+}
+
+function handleSystemMessage(msg) {
+  if (msg.text === 'userlist changed'){
+    fetchUserList();
+  }
+}
+
+function fetchUserList() {
+  console.log("aight motherfucker");
+  $('#users').empty();
+  $.get("/secured/trackedUsers", function(data) {
+    $.each(data, function(index, username) {
+      showUser(username);
+    })
+  })
 }
 
 $(function () {

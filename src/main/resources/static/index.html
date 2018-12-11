@@ -14,29 +14,47 @@
     Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
         <!--<button id="logout"><a href="/perform_logout">Logout</a></button>-->
-    <form name="logout-form" action="/perform_logout">
-        <input id="logout" type="submit" value="Log out" />
-    </form>
     <div class="row">
-        <div id="title"><h1>Chat</h1></div>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6" id="title"><h1>Chat</h1></div>
+        <div class="col-sm-2"></div>
+        <div class="col-sm-1">
+            <form name="logout-form" action="/perform_logout">
+                <input class="white-box" id="logout" type="submit" value="Log out" />
+            </form>
+        </div>
     </div>
-    <div id="chatbox" class="row">
-        <div class="col-md-12" style="float: none; margin: 0 auto;">
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div id="chatbox" class="col-sm-6 white-box">
             <table id="conversation" class="table table-fit">
-                <tbody id="greetings">
+                <tbody id="messages">
                 </tbody>
             </table>
+        </div>
+        <div class="col-sm-3">
+            <div id="userlist" class="white-box">
+                <div class="row"><div><h2>Users</h2></div></div>
+                <div class="row">
+                    <table id="user-table" class="table table-fit">
+                        <tbody id="users">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
     <form name="sendMessage-form">
         <div id="chatInput" class="form-group row">
-            <div class="col-sm-10 nopadding">
-                <input type="text" id="message" class="form-control-plaintext" placeholder="Your message here...">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-4 nopadding">
+                <input type="text" id="message" class="form-control-plaintext white-box" placeholder="Your message here...">
             </div>
             <div class="col-sm-2 nopadding">
-                <button id="sendMessage" class="col-sm-2 btn btn-default" type="submit">Send</button>
+                <button id="sendMessage" class="col-sm-2 btn btn-default white-box" type="submit">Send</button>
             </div>
+            <div class="col-sm-3"></div>
 
         </div>
     </form>

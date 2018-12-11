@@ -30,7 +30,7 @@ public class StompSubscribedEvent implements ApplicationListener<SessionSubscrib
             String username = event.getUser() != null ? event.getUser().getName() : "Someone";
 
             messagesRepository.getMessages().forEach((message) -> template.convertAndSendToUser(
-                    username, "/secured/user/queue/specific-user", message));
+                    username, "/secured/user/queue/chat/specific-user", message));
 
             log.info(String.format("%s connected", username));
             OutGoingMessage outGoingMessage = new OutGoingMessage(

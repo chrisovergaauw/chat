@@ -33,17 +33,18 @@ public class MessageHandlerService {
         return msg;
     }
 
-    public List<OutGoingMessage> announceNewUser() {
-        log.info("announcing new user...");
-        this.simpMessagingTemplate.convertAndSend("/secured/chatRoomHistory",
-                new OutGoingMessage("Server", "A user has joined the channel"));
-        return messagesRepository.getMessages();
+    public void registerPrivateMessage(IncomingMessage incomingMessage) {
+        registerSpecificMessage(incomingMessage, "chat");
+    }
+    public void registerSystemMessage(IncomingMessage incomingMessage) {
+        registerSpecificMessage(incomingMessage, "system");
     }
 
-    public void registerPrivateMessage(IncomingMessage incomingMessage) {
+
+    private void registerSpecificMessage(IncomingMessage incomingMessage, String destination) {
         log.info(incomingMessage.toString());
         OutGoingMessage msg = new OutGoingMessage(incomingMessage);
         simpMessagingTemplate.convertAndSendToUser(
-                incomingMessage.getTo(), "/secured/user/queue/specific-user", msg);
+                incomingMessage.getTo(), String.format("/secured/user/queue/%s/specific-user", destination), msg);
     }
 }

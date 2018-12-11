@@ -4,7 +4,7 @@ body {
 }
 
 
-#message, #sendMessage, #chatbox, #logout {
+.white-box {
     background: none;
     border-radius: 10px;
     border: solid #A9B7C6;
@@ -12,8 +12,6 @@ body {
 }
 
 #chatInput {
-    width: 50vw;
-    margin: auto auto 5vh;
 }
 
 #message, #sendMessage, #logout {
@@ -34,7 +32,7 @@ body {
     width: auto;
 }
 
-#title {
+#title, #userlist > div {
     text-align: center;
 }
 
@@ -43,9 +41,8 @@ input:focus, button:focus {
     box-shadow: 0 0 0 1pt #B5C4D3;
 }
 
-#chatbox {
+#chatbox, #userlist {
     height: 50vh;
-    width: 80%;
     overflow: auto;
     margin: auto auto 5vh;
 }

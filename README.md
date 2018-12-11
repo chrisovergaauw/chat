@@ -8,7 +8,7 @@ A simple springboot application which allows multiple users to chat with one ano
 - [X] Send simple messages
 - [X] Notification when user joins
 - [ ] Notification when user leaves
-- [ ] Display list of users
+- [X] Display list of users
 - [ ] Private messages
 
 - [ ] User account creation

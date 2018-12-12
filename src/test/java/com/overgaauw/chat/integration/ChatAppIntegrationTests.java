@@ -1,10 +1,7 @@
 package com.overgaauw.chat.integration;
 
 import com.overgaauw.chat.config.SeleniumConfig;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,12 +10,11 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
-@RunWith(SpringRunner.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ChatAppIntegrationTests {
 
@@ -31,6 +27,7 @@ public class ChatAppIntegrationTests {
 
     private String userDonatello = "Donatello";
     private String userRaphael = "Raphael";
+    private String userLeonardo = "Leonardo";
     private String testPassword = "p1zza";
 
     public ChatAppIntegrationTests() {
@@ -39,14 +36,19 @@ public class ChatAppIntegrationTests {
 
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         url = "http://localhost:" + port;
         performLoginSequence(driver, userDonatello, testPassword);
 
     }
 
-    @After
+    @AfterEach
+    public void reset() {
+        performLogoutSequence(driver);
+    }
+
+    @AfterAll
     public void cleanup() {
         config.close();
         driver.quit();
@@ -59,16 +61,26 @@ public class ChatAppIntegrationTests {
 
     @Test
     public void userIsAbleToLoginWithCorrectCredentialsAndLogout() {
-        assertEquals("Hello WebSocket", driver.getTitle());
-        driver.findElement(By.id("logout")).click();
-        assertTrue(driver.getCurrentUrl().endsWith("logout"));
+        final SeleniumConfig tmpConfig = new SeleniumConfig();
+        final WebDriver tmpDriver = tmpConfig.getDriver();
+        performLoginSequence(tmpDriver, userLeonardo, testPassword);
+
+        String loggedInTitle = tmpDriver.getTitle();
+        performLogoutSequence(tmpDriver);
+        String loggedOutURL = tmpDriver.getCurrentUrl();
+
+        tmpConfig.close();
+        tmpDriver.quit();
+
+        assertEquals("Hello WebSocket",loggedInTitle);
+        assertTrue(loggedOutURL.endsWith("logout"));
     }
 
     @Test
-    public void userIsNOTAbleToLoginWithCorrectCredentials() {
+    public void userIsNOTAbleToLoginWithIncorrectCredentials() {
         final SeleniumConfig tmpConfig = new SeleniumConfig();
         final WebDriver tmpDriver = tmpConfig.getDriver();
-        performLoginSequence(tmpDriver, userDonatello, "incorrectPassword1!");
+        performLoginSequence(tmpDriver, userLeonardo, "incorrectPassword1!");
         String url = tmpDriver.getCurrentUrl();
         tmpConfig.close();
         tmpDriver.quit();
@@ -79,7 +91,7 @@ public class ChatAppIntegrationTests {
     @Test
     public void welcomeMessageDisplayed(){
         WebElement dynamicElement = (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"greetings\"]/tr")));
+                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"messages\"]/tr")));
         String.format("%s has joined the channel!", userDonatello).equals(dynamicElement);
     }
 
@@ -89,6 +101,8 @@ public class ChatAppIntegrationTests {
         final WebDriver tmpDriver = tmpConfig.getDriver();
         performLoginSequence(tmpDriver, userRaphael, testPassword);
         String title = tmpDriver.getTitle();
+
+        performLogoutSequence(tmpDriver);
         tmpConfig.close();
         tmpDriver.quit();
 
@@ -102,11 +116,13 @@ public class ChatAppIntegrationTests {
         performLoginSequence(tmpDriver, userRaphael, testPassword);
 
         WebElement dynamicElement = (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"greetings\"]/tr[2]")));
-        String.format("%s has joined the channel!", userRaphael).equals(dynamicElement);
+                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"messages\"]/tr[2]")));
 
+        performLogoutSequence(tmpDriver);
         tmpConfig.close();
         tmpDriver.quit();
+
+        String.format("%s has joined the channel!", userRaphael).equals(dynamicElement);
     }
 
     @Test
@@ -119,11 +135,13 @@ public class ChatAppIntegrationTests {
         driver.findElement(By.id("sendMessage")).click();
 
         WebElement dynamicElement = (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"greetings\"]/tr[3]")));
-        String.format(msgToSend).equals(dynamicElement);
+                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"messages\"]/tr[3]")));
 
+        performLogoutSequence(tmpDriver);
         tmpConfig.close();
         tmpDriver.quit();
+
+        String.format(msgToSend).equals(dynamicElement);
     }
 
     private void performLoginSequence(WebDriver driver, String username, String password) {
@@ -134,5 +152,10 @@ public class ChatAppIntegrationTests {
         passwordField.clear();
         passwordField.sendKeys(password);
         driver.findElement(By.id("submit")).click();
+    }
+
+    private void performLogoutSequence(WebDriver driver) {
+        driver.get(url);
+        driver.findElement(By.id("logout")).click();
     }
 }

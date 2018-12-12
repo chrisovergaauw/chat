@@ -28,7 +28,7 @@ public class UserService {
 
     public List<String> getAllOnlineUsers() {
         final List<UserDetails> allPrincipals = (List<UserDetails>)(Object) sessionRegistry.getAllPrincipals();
-        return allPrincipals.stream().map(UserDetails::getUsername).collect(Collectors.toList());
+        return allPrincipals.stream().map(UserDetails::getUsername).distinct().collect(Collectors.toList());
     }
 
     @Async

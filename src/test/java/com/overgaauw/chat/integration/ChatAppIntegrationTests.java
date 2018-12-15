@@ -92,7 +92,7 @@ public class ChatAppIntegrationTests {
     public void welcomeMessageDisplayed(){
         WebElement dynamicElement = (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"messages\"]/tr")));
-        String.format("%s has joined the channel!", userDonatello).equals(dynamicElement);
+        assertTrue(dynamicElement.getText().contains(String.format("%s has joined the channel!", userDonatello)));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class ChatAppIntegrationTests {
     }
 
     @Test
-    public void secondWelcomeMessageDisplayed(){
+    public void secondWelcomeMessageDisplayed() {
         final SeleniumConfig tmpConfig = new SeleniumConfig();
         final WebDriver tmpDriver = tmpConfig.getDriver();
         performLoginSequence(tmpDriver, userRaphael, testPassword);
@@ -122,14 +122,16 @@ public class ChatAppIntegrationTests {
         tmpConfig.close();
         tmpDriver.quit();
 
-        String.format("%s has joined the channel!", userRaphael).equals(dynamicElement);
+        assertTrue(dynamicElement.getText().contains(String.format("%s has joined the channel!", userRaphael)));
     }
 
     @Test
-    public void usersCanSendAndReadMessages(){
+    public void usersCanSendAndReadMessages() throws InterruptedException {
         final String msgToSend = String.format("Hello %s", userDonatello);
         final SeleniumConfig tmpConfig = new SeleniumConfig();
         final WebDriver tmpDriver = tmpConfig.getDriver();
+        // TODO: fix flaky test
+        Thread.sleep(2000);
         performLoginSequence(tmpDriver, userRaphael, testPassword);
         driver.findElement(By.id("message")).sendKeys(msgToSend);
         driver.findElement(By.id("sendMessage")).click();
@@ -141,7 +143,69 @@ public class ChatAppIntegrationTests {
         tmpConfig.close();
         tmpDriver.quit();
 
-        String.format(msgToSend).equals(dynamicElement);
+        assertTrue(dynamicElement.getText().contains(msgToSend));
+    }
+
+    @Test
+    public void userNameDisplayedInUserlist() {
+        WebElement dynamicElement = (new WebDriverWait(driver, 10))
+                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"users\"]/tr")));
+        assertEquals(userDonatello,dynamicElement.getText());
+    }
+
+    @Test
+    public void multipleUserNamesDisplayedInUserlist() {
+        // TODO: fix flaky test
+        final SeleniumConfig tmpConfig = new SeleniumConfig();
+        final WebDriver tmpDriver = tmpConfig.getDriver();
+        performLoginSequence(tmpDriver, userRaphael, testPassword);
+
+        String firstUsernameAsSeenByFirstUser = (new WebDriverWait(driver, 15))
+                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"users\"]/tr")))
+                .getText();
+        String secondUsernameAsSeenBySecondUser = (new WebDriverWait(tmpDriver, 10))
+                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"users\"]/tr[2]")))
+                .getText();
+        String secondUsernameAsSeenByFirstUser = (new WebDriverWait(driver, 10))
+                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"users\"]/tr[2]")))
+                .getText();
+
+
+        performLogoutSequence(tmpDriver);
+        tmpConfig.close();
+        tmpDriver.quit();
+
+        assertTrue(String.format("%s%s",userDonatello,userRaphael).contains(firstUsernameAsSeenByFirstUser));
+        assertTrue(String.format("%s%s",userDonatello,userRaphael).contains(secondUsernameAsSeenBySecondUser));
+        assertTrue(String.format("%s%s",userDonatello,userRaphael).contains(secondUsernameAsSeenByFirstUser));
+    }
+
+    @Test
+    public void userListShrinksAfterAnotherUserLeaves() throws InterruptedException {
+        final SeleniumConfig tmpConfig = new SeleniumConfig();
+        final WebDriver tmpDriver = tmpConfig.getDriver();
+        // TODO: fix flaky test
+        Thread.sleep(2000);
+        performLoginSequence(tmpDriver, userRaphael, testPassword);
+        Thread.sleep(2000);
+
+
+        String secondUsernameAsSeenByFirstUser = (new WebDriverWait(driver, 10))
+                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"users\"]/tr[2]")))
+                .getText();
+        performLogoutSequence(tmpDriver);
+        String userListAsSeenByFirstUser = (new WebDriverWait(driver, 10))
+                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"users\"]")))
+                .getText();
+
+
+
+
+        tmpConfig.close();
+        tmpDriver.quit();
+
+        assertTrue(String.format("%s%s",userDonatello,userRaphael).contains(secondUsernameAsSeenByFirstUser));
+        assertTrue(String.format("%s%s",userDonatello,userRaphael).contains(userListAsSeenByFirstUser));
     }
 
     private void performLoginSequence(WebDriver driver, String username, String password) {

@@ -1,22 +1,19 @@
 package com.overgaauw.chat.config;
 
-import org.openqa.selenium.Capabilities;
+import lombok.Getter;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 public class SeleniumConfig {
 
+
+    @Getter
     private WebDriver driver;
 
     public SeleniumConfig() {
-        Capabilities capabilities = DesiredCapabilities.chrome();
-        driver = new ChromeDriver(capabilities);
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        driver = new ChromeDriver();
     }
 
     static {
@@ -36,16 +33,5 @@ public class SeleniumConfig {
         driver.close();
     }
 
-    public void navigateTo(String url) {
-        driver.navigate().to(url);
-    }
-
-    public void clickElement(WebElement element) {
-        element.click();
-    }
-
-    public WebDriver getDriver() {
-        return driver;
-    }
 }
 

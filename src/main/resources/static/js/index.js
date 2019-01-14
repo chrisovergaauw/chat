@@ -5,9 +5,10 @@ let username = "";
 window.onload = function() {
   connect()
     .then(() => {
+      subscribeToSystemChannel();
       subscribeToPrivateChannel();
       subscribeToChatRoom();
-      subscribeToSystemChannel();
+
     });
   fetchUserList();
 };
@@ -20,7 +21,7 @@ function connect() {
       stompClient.connect({}, function (frame) {
         let url = stompClient.ws._transport.url;
         url = url.replace(
-          "ws://localhost:8080/secured/room/",  "");
+          /ws:\/\/localhost:\d+\/secured\/room\//,  "");
         url = url.replace("/websocket", "");
         url = url.replace(/^[0-9]+\//, "");
         sessionId = url;
@@ -101,7 +102,6 @@ function handleSystemMessage(msg) {
 }
 
 function fetchUserList() {
-  console.log("aight motherfucker");
   $('#users').empty();
   $.get("/secured/trackedUsers", function(data) {
     $.each(data, function(index, username) {

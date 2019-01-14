@@ -3,7 +3,7 @@
 A simple springboot application which allows multiple users to chat with one another.
 
 **Features**
-- [X] Connect with username
+- [X] Connect with username (preset in client's dropdown list)
 - [X] Displays previous messages upon connecting
 - [X] Send simple messages
 - [X] Notification when user joins

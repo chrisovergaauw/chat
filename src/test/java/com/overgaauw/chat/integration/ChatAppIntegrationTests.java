@@ -10,11 +10,13 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ChatAppIntegrationTests {
 
@@ -24,7 +26,6 @@ public class ChatAppIntegrationTests {
     private SeleniumConfig config;
     private WebDriver driver;
     private String url;
-
     private String userDonatello = "Donatello";
     private String userRaphael = "Raphael";
     private String userLeonardo = "Leonardo";
@@ -40,7 +41,6 @@ public class ChatAppIntegrationTests {
     public void setup() {
         url = "http://localhost:" + port;
         performLoginSequence(driver, userDonatello, testPassword);
-
     }
 
     @AfterEach
@@ -51,7 +51,6 @@ public class ChatAppIntegrationTests {
     @AfterAll
     public void cleanup() {
         config.close();
-        driver.quit();
     }
 
     @Test
@@ -70,7 +69,6 @@ public class ChatAppIntegrationTests {
         String loggedOutURL = tmpDriver.getCurrentUrl();
 
         tmpConfig.close();
-        tmpDriver.quit();
 
         assertEquals("Hello WebSocket",loggedInTitle);
         assertTrue(loggedOutURL.endsWith("logout"));
@@ -83,7 +81,6 @@ public class ChatAppIntegrationTests {
         performLoginSequence(tmpDriver, userLeonardo, "incorrectPassword1!");
         String url = tmpDriver.getCurrentUrl();
         tmpConfig.close();
-        tmpDriver.quit();
 
         assertTrue(url.endsWith("error"));
     }
@@ -104,13 +101,12 @@ public class ChatAppIntegrationTests {
 
         performLogoutSequence(tmpDriver);
         tmpConfig.close();
-        tmpDriver.quit();
 
         assertEquals("Hello WebSocket", title);
     }
 
     @Test
-    public void secondWelcomeMessageDisplayed() {
+    public void secondWelcomeMessageDisplayedForFirstUser() {
         final SeleniumConfig tmpConfig = new SeleniumConfig();
         final WebDriver tmpDriver = tmpConfig.getDriver();
         performLoginSequence(tmpDriver, userRaphael, testPassword);
@@ -120,18 +116,15 @@ public class ChatAppIntegrationTests {
 
         performLogoutSequence(tmpDriver);
         tmpConfig.close();
-        tmpDriver.quit();
 
         assertTrue(dynamicElement.getText().contains(String.format("%s has joined the channel!", userRaphael)));
     }
 
     @Test
-    public void usersCanSendAndReadMessages() throws InterruptedException {
+    public void usersCanSendAndReadMessages() {
         final String msgToSend = String.format("Hello %s", userDonatello);
         final SeleniumConfig tmpConfig = new SeleniumConfig();
         final WebDriver tmpDriver = tmpConfig.getDriver();
-        // TODO: fix flaky test
-        Thread.sleep(2000);
         performLoginSequence(tmpDriver, userRaphael, testPassword);
         driver.findElement(By.id("message")).sendKeys(msgToSend);
         driver.findElement(By.id("sendMessage")).click();
@@ -141,7 +134,6 @@ public class ChatAppIntegrationTests {
 
         performLogoutSequence(tmpDriver);
         tmpConfig.close();
-        tmpDriver.quit();
 
         assertTrue(dynamicElement.getText().contains(msgToSend));
     }
@@ -155,7 +147,6 @@ public class ChatAppIntegrationTests {
 
     @Test
     public void multipleUserNamesDisplayedInUserlist() {
-        // TODO: fix flaky test
         final SeleniumConfig tmpConfig = new SeleniumConfig();
         final WebDriver tmpDriver = tmpConfig.getDriver();
         performLoginSequence(tmpDriver, userRaphael, testPassword);
@@ -170,10 +161,8 @@ public class ChatAppIntegrationTests {
                 .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"users\"]/tr[2]")))
                 .getText();
 
-
         performLogoutSequence(tmpDriver);
         tmpConfig.close();
-        tmpDriver.quit();
 
         assertTrue(String.format("%s%s",userDonatello,userRaphael).contains(firstUsernameAsSeenByFirstUser));
         assertTrue(String.format("%s%s",userDonatello,userRaphael).contains(secondUsernameAsSeenBySecondUser));
@@ -184,11 +173,7 @@ public class ChatAppIntegrationTests {
     public void userListShrinksAfterAnotherUserLeaves() throws InterruptedException {
         final SeleniumConfig tmpConfig = new SeleniumConfig();
         final WebDriver tmpDriver = tmpConfig.getDriver();
-        // TODO: fix flaky test
-        Thread.sleep(2000);
         performLoginSequence(tmpDriver, userRaphael, testPassword);
-        Thread.sleep(2000);
-
 
         String secondUsernameAsSeenByFirstUser = (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"users\"]/tr[2]")))
@@ -198,11 +183,7 @@ public class ChatAppIntegrationTests {
                 .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"users\"]")))
                 .getText();
 
-
-
-
         tmpConfig.close();
-        tmpDriver.quit();
 
         assertTrue(String.format("%s%s",userDonatello,userRaphael).contains(secondUsernameAsSeenByFirstUser));
         assertTrue(String.format("%s%s",userDonatello,userRaphael).contains(userListAsSeenByFirstUser));

@@ -16,6 +16,6 @@ public class UserController {
 
     @RequestMapping("/secured/trackedUsers")
     public List<String> getListLoggedInUsers() {
-        return userService.getAllOnlineUsers();
+        return userService.getAllOnlineUsernames();
     }
 }

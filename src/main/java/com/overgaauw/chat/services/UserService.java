@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.session.HttpSessionDestroyedEvent;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,19 +26,32 @@ public class UserService {
     @Autowired
     private MessageHandlerService messageHandlerService;
 
-    public List<String> getAllOnlineUsers() {
+    public List<String> getAllOnlineUsernames() {
         log.debug("online users fetched.");
-        final List<UserDetails> allPrincipals = (List<UserDetails>)(Object) sessionRegistry.getAllPrincipals();
-        return allPrincipals.stream().map(UserDetails::getUsername).distinct().collect(Collectors.toList());
+        List<UserDetails> allUserDetails = getAllUserDetails();
+
+        return allUserDetails.stream().map(UserDetails::getUsername).distinct().collect(Collectors.toList());
     }
 
     @EventListener({AuthenticationSuccessEvent.class, HttpSessionDestroyedEvent.class })
     public void onHttpSessionCreatedEvent() throws InterruptedException {
         log.debug("session event");
         IncomingMessage msg = new IncomingMessage("server", "userlist changed");
-        for (String user : getAllOnlineUsers()) {
+        for (String user : getAllOnlineUsernames()) {
             msg.setTo(user);
             messageHandlerService.registerSystemMessage(msg);
         }
+    }
+
+    private List<UserDetails> getAllUserDetails() {
+        final List<Object> allPrincipalObjects = sessionRegistry.getAllPrincipals();
+
+        List<UserDetails> allUserDetails = new ArrayList<>();
+        for (Object principalObject : allPrincipalObjects) {
+            if (principalObject instanceof UserDetails) {
+                allUserDetails.add((UserDetails) principalObject);
+            }
+        }
+        return allUserDetails;
     }
 }

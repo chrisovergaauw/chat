@@ -1,4 +1,4 @@
-#Chat
+# Chat
 
 A simple springboot application which allows multiple users to chat with one another.
 

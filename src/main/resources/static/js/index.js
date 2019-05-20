@@ -11,6 +11,7 @@ window.onload = function() {
 
     });
   fetchUserList();
+  document.getElementById('messageBox').focus();
 };
 
 function connect() {
@@ -64,8 +65,8 @@ function subscribeToSystemChannel(frame) {
 }
 
 function sendMessage() {
-  stompClient.send("/spring-security-mvc-socket/secured/chatRoom", {}, JSON.stringify({'from': username, 'text': $("#message").val()}));
-  const message = document.getElementById('message');
+  stompClient.send("/spring-security-mvc-socket/secured/chatRoom", {}, JSON.stringify({'from': username, 'text': $("#messageBox").val()}));
+  const message = document.getElementById('messageBox');
   message.value = '';
 
 }
@@ -81,7 +82,7 @@ function showMessages(body) {
 function showMessage(msg) {
   $("#messages").append(
     `<tr class="msg">
-        <td class="msg-timestamp block">${msg.timestamp}</td>
+        <td class="msg-timestamp block hidden-xs">${msg.timestamp}</td>
         <td class="msg-name">${msg.from}</td>
         <td class="msg-message" style="width: 100%;"> ${msg.text} </td></tr>`);
   $("#chatbox").scrollTop($("#chatbox").height());
@@ -111,12 +112,17 @@ function fetchUserList() {
 }
 
 $(function () {
-  $('form[name="sendMessage-form"]').on('submit', function (e) {
-    e.preventDefault();
+  $(document).on("keypress", ".input-group:has(input:input, span.input-group-btn:has(div.btn)) input:input", function(e){
+    if (e.which === 13){
+      console.log("enter");
+      console.log($(this).closest(".input-group").find("div.btn"));
+      $(this).closest(".input-group").find(".btn").click();
+    }
   });
 
-  $("#sendMessage").click(function () {
-    const message = document.getElementById('message');
+  $("#sendMessageButton").click(function () {
+    console.log("button");
+    const message = document.getElementById('messageBox');
     if (!(message.value === '')) {
       console.log(message);
       sendMessage();

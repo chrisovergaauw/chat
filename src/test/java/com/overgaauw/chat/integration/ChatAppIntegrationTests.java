@@ -126,8 +126,8 @@ public class ChatAppIntegrationTests {
         final SeleniumConfig tmpConfig = new SeleniumConfig();
         final WebDriver tmpDriver = tmpConfig.getDriver();
         performLoginSequence(tmpDriver, userRaphael, testPassword);
-        driver.findElement(By.id("message")).sendKeys(msgToSend);
-        driver.findElement(By.id("sendMessage")).click();
+        driver.findElement(By.id("messageBox")).sendKeys(msgToSend);
+        driver.findElement(By.id("sendMessageButton")).click();
 
         WebElement dynamicElement = (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"messages\"]/tr[3]")));

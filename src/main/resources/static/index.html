@@ -7,34 +7,46 @@
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
     enabled. Please enable
     Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
-        <!--<button id="logout"><a href="/perform_logout">Logout</a></button>-->
+    <!--<button id="logout"><a href="/perform_logout">Logout</a></button>-->
     <div class="row">
-        <div class="col-sm-3"></div>
-        <div class="col-sm-6" id="title"><h1>Chat</h1></div>
-        <div class="col-sm-2"></div>
-        <div class="col-sm-1">
+        <div class="col-xs-3"></div>
+        <div class="col-xs-6" id="title"><h1>Chat</h1></div>
+        <div class="col-xs-2"></div>
+        <div class="col-xs-1">
             <form name="logout-form" action="/perform_logout">
-                <input class="white-box" id="logout" type="submit" value="Log out" />
+                <input class="white-box" id="logout" type="submit" value="Log out"/>
             </form>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3"></div>
-        <div id="chatbox" class="col-sm-6 white-box">
-            <table id="conversation" class="table table-fit">
-                <tbody id="messages">
-                </tbody>
-            </table>
+        <div class="col-xs-3 hidden-xs"></div>
+        <div class="col-xs-12 col-lg-6">
+            <div id="chatbox" class=" white-box">
+                <table id="conversation" class="table table-fit">
+                    <tbody id="messages">
+                    </tbody>
+                </table>
+            </div>
+            <div name="sendMessage-form" class="input-group">
+                <input type="text" id="messageBox" class="form-control width100 white-box"
+                       placeholder="Your message here...">
+                <span class="input-group-btn">
+                    <button id="sendMessageButton" class="btn btn-info white-box">Send</button>
+                </span>
+            </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-md-3 col-sm-3 hidden-xs">
             <div id="userlist" class="white-box">
-                <div class="row"><div><h2>Users</h2></div></div>
+                <div class="row">
+                    <div><h2>Users</h2></div>
+                </div>
                 <div class="row">
                     <table id="user-table" class="table table-fit">
                         <tbody id="users">
@@ -44,20 +56,6 @@
             </div>
         </div>
     </div>
-
-    <form name="sendMessage-form">
-        <div id="chatInput" class="form-group row">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-4 nopadding">
-                <input type="text" id="message" class="form-control-plaintext white-box" placeholder="Your message here...">
-            </div>
-            <div class="col-sm-2 nopadding">
-                <button id="sendMessage" class="col-sm-2 btn btn-default white-box" type="submit">Send</button>
-            </div>
-            <div class="col-sm-3"></div>
-
-        </div>
-    </form>
 </div>
 <script src="js/index.js"></script>
 </body>
